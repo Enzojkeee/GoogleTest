@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "role": "FIRST_USER",
+      "login": "vtopalov777@gmail.com",
+      "password": "gcwBPsYszf2CbuBwlAubOg==",
+      "url": "https://mail.google.com/"
+    },
+    {
+      "role": "SECOND_USER",
+      "login": "vtopku777@gmail.com",
+      "password": "gcwBPsYszf2CbuBwlAubOg==",
+      "url": "https://mail.google.com/"
+    }
+  ]
+}
