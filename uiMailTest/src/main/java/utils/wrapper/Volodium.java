@@ -2,6 +2,7 @@ package utils.wrapper;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import utils.driver.WebDriverContainer;
 
 /**
@@ -70,7 +71,20 @@ public class Volodium {
         return new VolodiumElementList(locator);
     }
 
+    /**
+     * Получить значение текущего URL
+     * @return
+     */
     public static String getCurrentUrl(){
         return WebDriverContainer.INSTANCE.getRequiredWebDriver().getCurrentUrl();
+    }
+
+    /**
+     * Передать текст активному элементу
+     * @param text - текст, который хотим передать
+     */
+    public static void sendKeysToActiveElement(String text){
+        Actions actions = new Actions(WebDriverContainer.INSTANCE.getRequiredWebDriver());
+        actions.sendKeys(text).perform();
     }
 }

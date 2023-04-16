@@ -69,7 +69,7 @@ public class VolodiumElementsMatcher {
     /**
      * Проверить, что текстовые значения содержатся в тексте элемента
      *
-     * @param expectedTexts
+     * @param expectedTexts - Проверяет, что массив текста содержится в тексте элемента
      */
     public VolodiumElementsMatcher hasTexts(String... expectedTexts) {
         flexCheck(webElement ->
@@ -80,8 +80,7 @@ public class VolodiumElementsMatcher {
     }
 
     /**
-     *
-     * @return
+     * Проверяет, что эелемент выбран
      */
     public VolodiumElementsMatcher isSelected(){
         flexCheck(webElement -> Assertions.assertTrue(webElement.isSelected(), "Данный элемент не выбран"));
@@ -90,9 +89,9 @@ public class VolodiumElementsMatcher {
 
     /**
      * Проверить значение атрибута
-     * @param attributeName
-     * @param attributeValue
-     * @return
+     * @param attributeName - название атрибута
+     * @param attributeValue - значение атрибута
+     *
      */
     public VolodiumElementsMatcher checkAttribute(String attributeName, String attributeValue){
         flexCheck(webElement -> Assertions.assertEquals(attributeValue, webElement.getAttribute(attributeName)));
@@ -101,20 +100,13 @@ public class VolodiumElementsMatcher {
 
     /**
      * Метод для проверки условий с ожиданием
-     * Скролит положение страницы к элементу для скриншота
-     *
-     * @param action - проверка произваодимая с элементом
+     * @param action - проверка, производимая с элементом
      */
     private void flexCheck(@Nonnull Consumer<WebElement> action) {
         StopWatch stopWatch = StopWatch.createStarted();
         boolean scrolled = false;
         while (stopWatch.getTime() <= Config.CHROME.actionTimeout) {
             try {
-//                if (!scrolled) {
-//                    ((JavascriptExecutor) WebDriverContainer.INSTANCE.getRequiredWebDriver())
-//                            .executeScript("arguments[0].scrollIntoView(false)", matchedElement);
-//                    scrolled = true;
-//                }
                 action.accept(matchedElement);
                 return;
             } catch (Throwable e) {
@@ -127,5 +119,4 @@ public class VolodiumElementsMatcher {
         }
         action.accept(matchedElement);
     }
-
 }

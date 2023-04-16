@@ -1,17 +1,19 @@
 package panels;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
-import utils.elementUtils.GetElement;
 import utils.wrapper.Volodium;
 import utils.wrapper.VolodiumElement;
 
 import static utils.elementUtils.GetElement.elementByAriaLabel;
+import static utils.elementUtils.GetElement.elementByTextContaining;
+import static utils.wrapper.matcher.VolodiumElementsMatcher.assertTrue;
 
 /**
  * Левая меню панель Почты Google
  */
 public class LeftPanel {
-    private final VolodiumElement elementPrefix = Volodium.locateX("//div[@role, 'navigation']");
+    private final VolodiumElement elementPrefix = Volodium.locateX("//div[@role= 'navigation']");
 
     //Кнопка Входящие
     public WebElement incomingButton(){
@@ -25,6 +27,13 @@ public class LeftPanel {
 
     //Кнопка написать
     public WebElement writeButton(){
-        return elementByAriaLabel(elementPrefix, "Написать");
+        return elementByTextContaining(elementPrefix, "Написать");
+    }
+
+    @Step("Нажать кнопку 'Написать'")
+    public LeftPanel writeButtonClick(){
+        assertTrue(writeButton()).isVisible();
+        writeButton().click();
+        return this;
     }
 }

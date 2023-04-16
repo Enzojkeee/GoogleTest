@@ -3,13 +3,12 @@ package utils.wrapper;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import utils.driver.WebDriverContainer;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class VolodiumElementList implements List<WebElement> {
     private final By locator;
@@ -29,6 +28,7 @@ public class VolodiumElementList implements List<WebElement> {
      * @param action - действие над элементом
      */
     private void execute(Consumer<List<WebElement>> action) {
+        checkWebElements();
         StopWatch stopWatch = StopWatch.createStarted();
         while (stopWatch.getTime() <= Config.CHROME.actionTimeout) {
             try {
@@ -50,6 +50,7 @@ public class VolodiumElementList implements List<WebElement> {
      * @param action - действие над элементом
      */
     private <T> T execute(Function<List<WebElement>, T> action) {
+        checkWebElements();
         StopWatch stopWatch = StopWatch.createStarted();
         while (stopWatch.getTime() <= Config.CHROME.actionTimeout) {
             try {
@@ -178,5 +179,14 @@ public class VolodiumElementList implements List<WebElement> {
     @Override
     public List<WebElement> subList(int fromIndex, int toIndex) {
         return execute((Function<List<WebElement>, List<WebElement>>) webElements->webElements.subList(fromIndex, toIndex));
+    }
+
+    private void checkWebElements() {
+        if (webElements == null) {
+            webElements = VolodiumElementsLocator.INSTANCE.findElements(WebDriverContainer.INSTANCE.getRequiredWebDriver(), Objects.requireNonNull(locator))
+                    .stream()
+                    .map(VolodiumElement::wrap)
+                    .collect(Collectors.toList());
+        }
     }
 }

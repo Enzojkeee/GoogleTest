@@ -1,15 +1,12 @@
 package pages;
 
 import io.qameta.allure.Step;
-import org.openqa.selenium.Keys;
+import org.apache.commons.lang3.time.StopWatch;
 import org.openqa.selenium.WebElement;
-import utils.elementUtils.GetElement;
 import utils.wrapper.Volodium;
-import utils.wrapper.VolodiumElement;
-import utils.wrapper.matcher.VolodiumElementsMatcher;
 
-import static utils.elementUtils.GetElement.*;
-import static utils.wrapper.Volodium.*;
+import static utils.elementUtils.GetElement.buttonByTextContaining;
+import static utils.elementUtils.GetElement.elementByAriaLabel;
 import static utils.wrapper.matcher.VolodiumElementsMatcher.assertTrue;
 
 /**
@@ -28,7 +25,12 @@ public class LoginPage {
 
     //Кнопка Далее
     public WebElement nextButton(){
-        return buttonByText("Далее");
+        return buttonByTextContaining("Далее");
+    }
+
+    //Прогресс-бар
+    public WebElement progressBar(){
+        return Volodium.locate("#initialView");
     }
 
 //    //Кнопка 'Не сейчас'
@@ -44,21 +46,34 @@ public class LoginPage {
     }
 
     public LoginPage nextButtonClick(){
-//        assertTrue(nextButton()).isVisible();
+        assertTrue(nextButton()).isVisible();
         nextButton().click();
         return this;
     }
 
+    @Step("Нажать кнопку Далее")
     public LoginPage nextPassButtonClick(){
         assertTrue(nextButton()).isVisible();
         nextButton().click();
         return this;
     }
 
+    @Step("Заполнить поле пароль")
     public LoginPage fillPasswordInput(String pass){
         assertTrue(passInput()).isVisible();
         passInput().sendKeys(pass);
 //        passInput().sendKeys(Keys.ENTER);
         return this;
+    }
+
+    @Step("Дождаться, пока уйдет прогресс бар")
+    public LoginPage waitForProgressBarProcessing(){
+        StopWatch stopWatch = StopWatch.createStarted();
+        while (stopWatch.getTime()<15000){
+            if (progressBar().getAttribute("aria-busy") == null) {
+                return this;
+            }
+        }
+        throw new RuntimeException("Спиннер все крутится");
     }
 }

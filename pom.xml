@@ -72,6 +72,9 @@
                             <value>true</value>
                         </property>
                     </systemProperties>
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}${file.separator}allure-results</allure.results.directory>
+                    </systemPropertyVariables>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -88,9 +91,7 @@
                 <version>2.11.2</version>
                 <configuration>
                     <reportVersion>2.21.0</reportVersion>
-                    <reportDirectory>${project.build.directory}\target\allure-results</reportDirectory>
                 </configuration>
-
             </plugin>
         </plugins>
     </build>

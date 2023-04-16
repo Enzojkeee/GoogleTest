@@ -16,6 +16,7 @@ public class VolodiumElement implements WebElement {
 
     public VolodiumElement(By locator) {
         this.locator = locator;
+        checkWebElement();
     }
 
     private VolodiumElement(WebElement webElement) {
@@ -23,8 +24,8 @@ public class VolodiumElement implements WebElement {
         this.webElement = webElement;
     }
 
-    public WebElement wrap() {
-        return webElement;
+    public static VolodiumElement wrap(WebElement source) {
+        return new VolodiumElement(source);
     }
 
     /**
@@ -33,7 +34,6 @@ public class VolodiumElement implements WebElement {
      * @param action - действие над элементом
      */
     private void execute(Consumer<WebElement> action) {
-        checkWebElement();
 
         StopWatch stopWatch = StopWatch.createStarted();
         while (stopWatch.getTime() <= Config.CHROME.actionTimeout) {
@@ -57,7 +57,6 @@ public class VolodiumElement implements WebElement {
      * @param action - действие над элементом
      */
     private <T> T execute(Function<WebElement, T> action) {
-        checkWebElement();
 
         StopWatch stopWatch = StopWatch.createStarted();
         while (stopWatch.getTime() <= Config.CHROME.actionTimeout) {
@@ -121,12 +120,18 @@ public class VolodiumElement implements WebElement {
 
     @Override
     public List<WebElement> findElements(By by) {
-        return VolodiumElementsLocator.INSTANCE.findElements(INSTANCE.getRequiredWebDriver(), by);
+        if (webElement == null)
+            return VolodiumElementsLocator.INSTANCE.findElements(INSTANCE.getRequiredWebDriver(), by);
+        else
+            return webElement.findElements(by);
     }
 
     @Override
     public WebElement findElement(By by) {
-        return VolodiumElementsLocator.INSTANCE.findElement(INSTANCE.getRequiredWebDriver(), by);
+        if (webElement == null)
+            return VolodiumElementsLocator.INSTANCE.findElement(INSTANCE.getRequiredWebDriver(), by);
+        else
+            return webElement.findElement(by);
     }
 
     @Override

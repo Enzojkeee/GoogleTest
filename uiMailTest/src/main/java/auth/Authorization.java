@@ -16,6 +16,7 @@ public class Authorization {
         LoginPage loginPage = new LoginPage()
                 .fillEmailInput(user.getLogin())
                 .nextButtonClick()
+                .waitForProgressBarProcessing()
                 .fillPasswordInput(user.getPassword())
                 .nextPassButtonClick();
         InboxPage inboxPage = new InboxPage();
