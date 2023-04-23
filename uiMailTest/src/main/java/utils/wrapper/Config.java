@@ -18,5 +18,5 @@ public enum Config {
     public final long actionTimeout = 10000L;
     public final int defaultIterationTimeout = 250;
     public final boolean headless = false;
-    public final PageLoadStrategy pageLoadStrategy = PageLoadStrategy.EAGER;
+    public final PageLoadStrategy pageLoadStrategy = PageLoadStrategy.NORMAL;
 }

@@ -11,6 +11,7 @@
     <modules>
         <module>uiMailTest</module>
         <module>utils</module>
+        <module>apiTest</module>
     </modules>
 
     <properties>

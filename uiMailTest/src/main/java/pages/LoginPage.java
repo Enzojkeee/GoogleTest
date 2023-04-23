@@ -7,7 +7,7 @@ import utils.wrapper.Volodium;
 
 import static utils.elementUtils.GetElement.buttonByTextContaining;
 import static utils.elementUtils.GetElement.elementByAriaLabel;
-import static utils.wrapper.matcher.VolodiumElementsMatcher.assertTrue;
+import static utils.wrapper.matcher.VolodiumElementMatcher.assertTrue;
 
 /**
  * Класс для работы с элементами страницы ввода Логина/Пароля
@@ -33,14 +33,9 @@ public class LoginPage {
         return Volodium.locate("#initialView");
     }
 
-//    //Кнопка 'Не сейчас'
-//    public VolodiumElement notNowButton(){
-//        return
-//    }
-
     @Step("Заполнить поле Email")
     public LoginPage fillEmailInput(String email){
-//        assertTrue(emailInput()).isVisible();
+        assertTrue(emailInput()).isVisible();
         emailInput().sendKeys(email);
         return this;
     }

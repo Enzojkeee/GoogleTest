@@ -1,9 +1,9 @@
 package utils.wrapper;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import utils.driver.WebDriverContainer;
+
+import static utils.driver.WebDriverContainer.INSTANCE;
 
 /**
  * Базовый класс для работы с Вебдрайвером
@@ -16,7 +16,7 @@ public class Volodium {
      * @param url - URL который необходимо открыть
      */
     public static void open(String url) {
-        WebDriverContainer.INSTANCE.getOrInitWebDriver().navigate().to(url);
+        INSTANCE.getOrInitWebDriver().navigate().to(url);
     }
 
 
@@ -24,7 +24,7 @@ public class Volodium {
      * Закрывает текущий экземпляр браузера
      */
     public static void close() {
-        WebDriverContainer.INSTANCE.closeWebDriver();
+        INSTANCE.closeWebDriver();
     }
 
     /**
@@ -76,7 +76,7 @@ public class Volodium {
      * @return
      */
     public static String getCurrentUrl(){
-        return WebDriverContainer.INSTANCE.getRequiredWebDriver().getCurrentUrl();
+        return INSTANCE.getRequiredWebDriver().getCurrentUrl();
     }
 
     /**
@@ -84,7 +84,36 @@ public class Volodium {
      * @param text - текст, который хотим передать
      */
     public static void sendKeysToActiveElement(String text){
-        Actions actions = new Actions(WebDriverContainer.INSTANCE.getRequiredWebDriver());
+        Actions actions = new Actions(INSTANCE.getRequiredWebDriver());
         actions.sendKeys(text).perform();
+    }
+
+    /**
+     * Навести мышку на выбранный элемент
+     */
+    public static void hoverElement(VolodiumElement element){
+        getAction().moveToElement(element).perform();
+    }
+
+    /**
+     * Получить экземпляр Action текущего драйвера
+     * @return
+     */
+    public static Actions getAction(){
+        Actions actions = new Actions(INSTANCE.getRequiredWebDriver());
+
+        return actions;
+    }
+
+    /**
+     * sleep
+     * @param miliseconds - время в милисекундах
+     */
+    public static void sleep(int miliseconds){
+        try {
+            Thread.sleep(miliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

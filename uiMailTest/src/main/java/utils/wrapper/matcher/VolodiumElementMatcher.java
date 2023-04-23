@@ -2,38 +2,37 @@ package utils.wrapper.matcher;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import utils.driver.WebDriverContainer;
 import utils.wrapper.Config;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+import static java.lang.String.format;
 import static java.lang.Thread.sleep;
 
 /**
  * Класс осуществляющий проверки для VolodiumElements
  */
-public class VolodiumElementsMatcher {
+public class VolodiumElementMatcher {
     private final WebElement matchedElement;
 
-    private VolodiumElementsMatcher(WebElement matchedElement) {
+    private VolodiumElementMatcher(WebElement matchedElement) {
         this.matchedElement = matchedElement;
     }
 
     /**
      * Метод для начала проверок VolodiumElement
      */
-    public static VolodiumElementsMatcher assertTrue(WebElement element) {
-        return new VolodiumElementsMatcher(element);
+    public static VolodiumElementMatcher assertTrue(WebElement element) {
+        return new VolodiumElementMatcher(element);
     }
 
     /**
      * Проверяет, что элемент видим на странице
      */
-    public VolodiumElementsMatcher isVisible() {
+    public VolodiumElementMatcher isVisible() {
         flexCheck(webElement -> Assertions.assertTrue(webElement.isDisplayed(), "Элемент не отображается на странице"));
         return this;
     }
@@ -41,15 +40,23 @@ public class VolodiumElementsMatcher {
     /**
      * Проверяет, что элемент неактивен
      */
-    public VolodiumElementsMatcher isDisabled() {
+    public VolodiumElementMatcher isDisabled() {
         flexCheck(webElement -> Assertions.assertFalse(webElement.isEnabled(), "Элемент не отключен"));
+        return this;
+    }
+
+    /**
+     * Проверяет, что элемент активен
+     */
+    public VolodiumElementMatcher isEnabled() {
+        flexCheck(webElement -> Assertions.assertTrue(webElement.isEnabled(), "Элемент включен"));
         return this;
     }
 
     /**
      * Проверяет, что элемент не отображается на странице
      */
-    public VolodiumElementsMatcher isNotVisible() {
+    public VolodiumElementMatcher isNotVisible() {
         flexCheck(webElement -> Assertions.assertFalse(matchedElement.isDisplayed(), "Элемент не видим настранице"));
         return this;
     }
@@ -59,7 +66,7 @@ public class VolodiumElementsMatcher {
      *
      * @param expectedText - подстрока текста элемента
      */
-    public VolodiumElementsMatcher hasText(String expectedText) {
+    public VolodiumElementMatcher hasText(String expectedText) {
         String actual = matchedElement.getText();
         flexCheck(webElement -> Assertions.assertTrue(matchedElement.getText().contains(expectedText),
                 expectedText + "не содержится в строке " + actual));
@@ -71,10 +78,10 @@ public class VolodiumElementsMatcher {
      *
      * @param expectedTexts - Проверяет, что массив текста содержится в тексте элемента
      */
-    public VolodiumElementsMatcher hasTexts(String... expectedTexts) {
+    public VolodiumElementMatcher hasTexts(String... expectedTexts) {
         flexCheck(webElement ->
-            Arrays.stream(expectedTexts)
-                    .forEach(text -> Assertions.assertTrue(matchedElement.getText().contains(text)))
+                Arrays.stream(expectedTexts)
+                        .forEach(text -> Assertions.assertTrue(matchedElement.getText().contains(text)))
         );
         return this;
     }
@@ -82,24 +89,32 @@ public class VolodiumElementsMatcher {
     /**
      * Проверяет, что эелемент выбран
      */
-    public VolodiumElementsMatcher isSelected(){
+    public VolodiumElementMatcher isSelected() {
         flexCheck(webElement -> Assertions.assertTrue(webElement.isSelected(), "Данный элемент не выбран"));
         return this;
     }
 
     /**
      * Проверить значение атрибута
-     * @param attributeName - название атрибута
-     * @param attributeValue - значение атрибута
      *
+     * @param attributeName  - название атрибута
+     * @param attributeValue - значение атрибута
      */
-    public VolodiumElementsMatcher checkAttribute(String attributeName, String attributeValue){
-        flexCheck(webElement -> Assertions.assertEquals(attributeValue, webElement.getAttribute(attributeName)));
+    public VolodiumElementMatcher checkAttribute(String attributeName, String attributeValue) {
+        flexCheck(webElement -> Assertions.assertEquals(attributeValue, webElement.getAttribute(attributeName),
+                format("атрибут %s отличается от ожидаемого", attributeName)));
+        return this;
+    }
+
+    public VolodiumElementMatcher checkCssProperty(String cssName, String cssValue) {
+        flexCheck(webElement -> Assertions.assertEquals(cssValue, webElement.getCssValue(cssName),
+                format("cssProperty %s отличается от ожидаемого", cssName)));
         return this;
     }
 
     /**
      * Метод для проверки условий с ожиданием
+     *
      * @param action - проверка, производимая с элементом
      */
     private void flexCheck(@Nonnull Consumer<WebElement> action) {

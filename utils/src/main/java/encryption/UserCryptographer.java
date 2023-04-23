@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import files.FilesWorker;
 import models.User;
-import models.UserRoleImpl;
+import models.UserRole;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,7 +30,7 @@ public class UserCryptographer {
         return instance;
     }
 
-    public static User getUser(UserRoleImpl role) {
+    public static User getUser(UserRole role) {
         return users.get(role.getName());
     }
 
@@ -40,10 +40,11 @@ public class UserCryptographer {
      * @return -
      */
     public List<User> decryptUsers() {
-        File json = new FilesWorker().getFileFromResources("/roles/users.json");
+        File json = new FilesWorker().getFileFromResources("/encryption/users.json");
         try {
             Gson gson = new Gson();
-            JsonArray userArray = gson.fromJson(new FileReader(json), JsonObject.class).getAsJsonArray("data");
+            JsonArray userArray = gson.fromJson(new FileReader(json), JsonObject.class)
+                    .getAsJsonArray("data");
             List<User> userList = new ArrayList<>();
             userArray.forEach((it) -> userList.add(gson.fromJson(it, User.class)));
             userList.forEach((it) -> {

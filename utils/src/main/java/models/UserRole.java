@@ -1,5 +1,5 @@
 package models;
 
-public interface UserRoleImpl {
+public interface UserRole {
     String getName();
 }

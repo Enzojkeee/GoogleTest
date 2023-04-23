@@ -2,15 +2,18 @@ package pages;
 
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import panels.LeftPanel;
 import utils.TableWork;
 import utils.elementUtils.GetElement;
+import utils.wrapper.ActionsWrapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.elementUtils.ByAttribute.byDataToolTip;
+import static utils.elementUtils.ByAttribute.byRole;
 import static utils.elementUtils.GetElement.getElementByRole;
-import static utils.wrapper.matcher.VolodiumElementsMatcher.assertTrue;
+import static utils.wrapper.matcher.VolodiumElementMatcher.assertTrue;
 
 /**
  * Страница Входящих писем
@@ -33,13 +36,39 @@ public class InboxPage {
         return new TableWork(inboxTabelElement());
     }
 
+    /**
+     * Получить toolbar текущей строки
+     *
+     * @param row - строка, у которой хотим получить toolbar
+     * @return - WebElement toolbar
+     */
+    private WebElement toolbarElement(WebElement row) {
+        return row.findElement(byRole("toolbar"));
+    }
+
+    @Step("Получить элемент toolbar и проверить видимость при наведении")
+    public WebElement hoverRowAndGetToolbarVisible(WebElement row) {
+        WebElement toolbar = toolbarElement(row);
+        assertTrue(toolbar).isNotVisible();
+        ActionsWrapper.hoverOnElement(row);
+        assertTrue(toolbar).isVisible();
+        return toolbar;
+    }
+
+    @Step("Нажать кнопку 'Удалить' у выбранного тулбара")
+    public void toolbarDeleteClick(WebElement toolbar) {
+        WebElement deleteButton = toolbar.findElement(byDataToolTip("Удалить"));
+        assertTrue(deleteButton).isVisible();
+        deleteButton.click();
+    }
+
     @Step("Проверить, что фильтр 'Несортированные' выбран")
     public InboxPage checkNotSortedSelected() {
         assertTrue(notSortedFilterButton()).checkAttribute("aria-selected", "true");
         return this;
     }
 
-    @Step("Проверить, что в первая строка входящих писем содержит текст = {text}")
+    @Step("Проверить, что первая строка входящих писем содержит текст = {text}")
     public InboxPage checkFirstRowContainsText(String... text) {
         assertTrue(tableWork().getAllRows().get(0)).hasTexts(text);
         return this;
@@ -50,7 +79,8 @@ public class InboxPage {
         StopWatch stopWatch = StopWatch.createStarted();
         while (stopWatch.getTime() < 5000) {
             try {
-                Assertions.assertEquals(msgCountWithoutNewMsg + 1, tableWork().getAllRows().size());
+                assertEquals(msgCountWithoutNewMsg + 1, tableWork().getAllRows().size(),
+                        "Новое письмо не пришло за 5 сек");
                 return this;
             } catch (AssertionError ignored) {
             }

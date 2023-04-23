@@ -8,7 +8,7 @@ import utils.wrapper.Volodium;
 import utils.wrapper.VolodiumElement;
 
 import static utils.elementUtils.GetElement.*;
-import static utils.wrapper.matcher.VolodiumElementsMatcher.assertTrue;
+import static utils.wrapper.matcher.VolodiumElementMatcher.assertTrue;
 
 /**
  * Класс для работы с модальным окном Новое сообщение
@@ -37,18 +37,38 @@ public class NewMessageModal {
     }
 
     //Поле Тема
-    public WebElement subjectInput(){
+    public WebElement subjectInput() {
         return elementByAriaLabel(elementPrefix, "Тема");
     }
 
     //Инпут содержания письма
-    public WebElement mailTextInput(){
-        return elementByAriaLabel(elementPrefix,"div", "Текст письма");
+    public WebElement mailTextInput() {
+        return elementByAriaLabel(elementPrefix, "div", "Текст письма");
     }
 
     //Кнопка Отправить
-    public WebElement sendButton(){
-        return elementByExactText(elementPrefix,"Отправить");
+    public WebElement sendButton() {
+        return elementByExactText(elementPrefix, "Отправить");
+    }
+
+    //Кнопка закрытия модального окна отправки сообщений
+    public WebElement closeModalButton() {
+        return elementByAriaLabel(elementPrefix, "Сохранить и закрыть");
+    }
+
+    //Скрытый инпут Получатель (для получения текста поля Получатели)
+    public WebElement hiddenInputFrom() {
+        return getElementByName("from");
+    }
+
+    //Скрытый инпут Тема (для получения текста поля Тема)
+    public WebElement hiddenInputSubject() {
+        return getElementByName("subject");
+    }
+
+    //Скрытый инпут Тема (для получения текста поля Тема)
+    public WebElement hiddenInputBody() {
+        return getElementByName("body");
     }
 
     @Step("Проверить, что хидер Новое сообщение видим")
@@ -67,23 +87,38 @@ public class NewMessageModal {
     }
 
     @Step("Заполнить поле тема = {text}")
-    public NewMessageModal fillSubject(String text){
+    public NewMessageModal fillSubject(String text) {
         subjectInput().click();
         subjectInput().sendKeys(text);
         return this;
     }
 
     @Step("Заполнить содержания письма")
-    public NewMessageModal fillTextOfMail(String text){
+    public NewMessageModal fillTextOfMail(String text) {
         mailTextInput().click();
         Volodium.sendKeysToActiveElement(text);
         return this;
     }
 
     @Step("Нажать кнопку отправить")
-    public NewMessageModal sendButtonClick(){
+    public NewMessageModal sendButtonClick() {
         assertTrue(sendButton()).isVisible();
         sendButton().click();
+        return this;
+    }
+
+    @Step("Нажать кнопку 'Закрыть' окна отправки сообщений")
+    public NewMessageModal closeButtonClick() {
+        assertTrue(closeModalButton()).isVisible();
+        closeModalButton().click();
+        return this;
+    }
+
+    @Step("Проверить, что поля содержат значения: Получатели={cnee}, Тема={subject}, Текст письма={body}")
+    public NewMessageModal checkFromHasText(String cnee, String subject, String body) {
+        assertTrue(hiddenInputFrom()).checkAttribute("value", cnee);
+        assertTrue(hiddenInputSubject()).checkAttribute("value", subject);
+        assertTrue(mailTextInput()).hasText(body);
         return this;
     }
 }

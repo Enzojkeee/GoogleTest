@@ -123,7 +123,7 @@ public class VolodiumElement implements WebElement {
         if (webElement == null)
             return VolodiumElementsLocator.INSTANCE.findElements(INSTANCE.getRequiredWebDriver(), by);
         else
-            return webElement.findElements(by);
+            return execute((Function<WebElement, List<WebElement>>) webElement->webElement.findElements(by));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class VolodiumElement implements WebElement {
         if (webElement == null)
             return VolodiumElementsLocator.INSTANCE.findElement(INSTANCE.getRequiredWebDriver(), by);
         else
-            return webElement.findElement(by);
+            return execute((Function<WebElement, WebElement>) webElement->webElement.findElement(by));
     }
 
     @Override

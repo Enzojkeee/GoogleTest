@@ -1,8 +1,8 @@
 package utils.encryption;
 
-import models.UserRoleImpl;
+import models.UserRole;
 
-public enum UserRole implements UserRoleImpl {
+public enum UserRoleUi implements UserRole {
     FIRST_USER,
     SECOND_USER;
 

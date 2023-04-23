@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "secondName": {
+      "type": "string"
+    },
+    "age": {
+      "type": "number"
+    },
+    "sex": {
+      "type": "string"
+    },
+    "money": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "firstName",
+    "secondName",
+    "age",
+    "sex",
+    "money"
+  ]
+}
