@@ -1,22 +1,22 @@
 import alerts.InboxWindowAlert;
 import io.qameta.allure.Step;
 import models.User;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import pages.DraftsPage;
 import pages.InboxPage;
 import pages.modal.NewMessageModal;
 import utils.Pagination;
-import utils.wrapper.Volodium;
-import utils.wrapper.matcher.VolodiumElementListMatcher;
 
 import java.util.List;
 
 import static auth.Authorization.login;
 import static encryption.UserCryptographer.getUser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.encryption.UserRoleUi.FIRST_USER;
-import static utils.wrapper.Volodium.getCurrentUrl;
+import static utils.wrapper.Volodium.*;
 import static utils.wrapper.matcher.VolodiumElementListMatcher.assertThat;
 
 public class DefaultPageTest {
@@ -39,9 +39,8 @@ public class DefaultPageTest {
     @Test
     @DisplayName("Проверка состояния страницы после логина")
     void checkPageAfterLogin() {
-        inboxPage.notSortedFilterButton().getAttribute("aria-selected");
         inboxPage.checkNotSortedSelected();
-        checkURLContains();
+        checkUrlContains("https://mail.google.com/mail/u/0/#inbox");
     }
 
     /**
@@ -113,15 +112,10 @@ public class DefaultPageTest {
                 .closeButtonClick();
 
         inboxPage.leftPanel.redirectToDrafts();
-        Volodium.sleep(30000);
+        sleep(3000);
         clickDraftByParam(msg, subject);
 
-        new NewMessageModal().checkFromHasText(user.getLogin(), subject, msg);
-    }
-
-    @Step("Проверить, что URL = содержит https://mail.google.com/mail/u/0/#inbox")
-    private void checkURLContains() {
-        assertEquals("https://mail.google.com/mail/u/0/#inbox", getCurrentUrl());
+        newMessageModal.checkFromHasText(user.getLogin(), subject, msg);
     }
 
     @Step("Проверить, что строка сообщения не содержится в папке Входящие")
@@ -133,19 +127,18 @@ public class DefaultPageTest {
             pagination.nextPageButtonClick();
             rowsFromAllPages.addAll(inboxPage.tableWork().getAllRows());
         }
-
         assertThat(rowsFromAllPages).notContainsTextInAnyElement(rowText);
     }
 
-    @Step("Найти закрытый черновик в таблице, проверить, что нет совпадений и нажать на него в таблице")
-    private void clickDraftByParam(String... params){
+    @Step("Найти закрытый черновик в таблице, проверить, что он один и нажать на него в таблице")
+    private void clickDraftByParam(String... params) {
         List<WebElement> filteredDrafts = draftsPage.tableWork().findRowsWithText(params);
-        VolodiumElementListMatcher.assertThat(filteredDrafts).hasSize(1);
+        assertThat(filteredDrafts).hasSize(1);
         filteredDrafts.get(0).click();
     }
 
     @AfterEach
     void afterEach() {
-        Volodium.close();
+        close();
     }
 }

@@ -58,7 +58,7 @@ public class InboxPage {
     @Step("Нажать кнопку 'Удалить' у выбранного тулбара")
     public void toolbarDeleteClick(WebElement toolbar) {
         WebElement deleteButton = toolbar.findElement(byDataToolTip("Удалить"));
-        assertTrue(deleteButton).isVisible();
+        assertTrue(deleteButton).isVisible().isEnabled();
         deleteButton.click();
     }
 

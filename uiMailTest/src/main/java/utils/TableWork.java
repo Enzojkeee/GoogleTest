@@ -7,10 +7,8 @@ import utils.wrapper.matcher.VolodiumElementListMatcher;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static utils.wrapper.Volodium.locate;
 import static utils.wrapper.Volodium.locateX;
 
 /**
@@ -35,7 +33,7 @@ public class TableWork {
     @Step("Выбрать случайную строку в таблице")
     public WebElement getRandomRow() {
         List<WebElement> allRows = getAllRows();
-        return allRows.get(new Random().nextInt(allRows.size() - 1));
+        return allRows.get(new Random().nextInt(allRows.size()));
     }
 
     /**
@@ -58,6 +56,7 @@ public class TableWork {
 
     /**
      * Находит строку по совпадению любого из элементов массива
+     *
      * @param texts - набор строк для поиска по сопданению
      * @return - коллекцию отфильтрованных элементов
      */

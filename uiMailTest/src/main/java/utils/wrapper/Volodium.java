@@ -1,8 +1,10 @@
 package utils.wrapper;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.driver.WebDriverContainer.INSTANCE;
 
 /**
@@ -73,17 +75,19 @@ public class Volodium {
 
     /**
      * Получить значение текущего URL
+     *
      * @return
      */
-    public static String getCurrentUrl(){
+    public static String getCurrentUrl() {
         return INSTANCE.getRequiredWebDriver().getCurrentUrl();
     }
 
     /**
      * Передать текст активному элементу
+     *
      * @param text - текст, который хотим передать
      */
-    public static void sendKeysToActiveElement(String text){
+    public static void sendKeysToActiveElement(String text) {
         Actions actions = new Actions(INSTANCE.getRequiredWebDriver());
         actions.sendKeys(text).perform();
     }
@@ -91,25 +95,32 @@ public class Volodium {
     /**
      * Навести мышку на выбранный элемент
      */
-    public static void hoverElement(VolodiumElement element){
+    public static void hoverElement(VolodiumElement element) {
         getAction().moveToElement(element).perform();
     }
 
     /**
      * Получить экземпляр Action текущего драйвера
+     *
      * @return
      */
-    public static Actions getAction(){
+    public static Actions getAction() {
         Actions actions = new Actions(INSTANCE.getRequiredWebDriver());
 
         return actions;
     }
 
+    @Step("Проверить, что URL = {url}")
+    public static void checkUrlContains(String url) {
+        assertEquals(url, getCurrentUrl(), getCurrentUrl() + "не соотвествует ожидаемому");
+    }
+
     /**
      * sleep
+     *
      * @param miliseconds - время в милисекундах
      */
-    public static void sleep(int miliseconds){
+    public static void sleep(int miliseconds) {
         try {
             Thread.sleep(miliseconds);
         } catch (InterruptedException e) {
