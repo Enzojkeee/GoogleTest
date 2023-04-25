@@ -1,10 +1,14 @@
 package json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.util.List;
-
+/**
+ * Класс для парсинга Json в объекты
+ */
 public class JsonParserExtension {
+    private static final Gson gson = new Gson();
+
+    public static <T> T parseJson(String json, Class<T> tClass) {
+        return gson.fromJson(json, tClass);
+    }
 }

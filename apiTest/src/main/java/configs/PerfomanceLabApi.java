@@ -3,17 +3,18 @@ package configs;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import models.User;
+import models.login.LoginRs;
+import org.hamcrest.CoreMatchers;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.mapper.ObjectMapperType.GSON;
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 public class PerfomanceLabApi {
     /**
-     * Получить RequestSpecification
-     *
-     * @return
+     * Получить RequestSpecification адресом, и базовыми хидерами
      */
     public static RequestSpecification getBasicPerfSpec() {
         return new RequestSpecBuilder()
@@ -25,17 +26,15 @@ public class PerfomanceLabApi {
 
     /**
      * Получить RequestSpecification для perfomanceLabAPI (авторизованный пользователь)
-     *
-     * @return -
      */
     public static RequestSpecification getAuthSpec(User user) {
-        String accessToken = given().spec(getBasicPerfSpec()).body(String.format("{" +
-                        "  \"password\": \"%s\",\n" +
-                        "  \"username\": \"%s\"\n" +
-                        "}", user.getPassword(), user.getLogin()))
+        String accessToken = given().spec(getBasicPerfSpec())
+                .body(new LoginRs(user.getPassword(), user.getLogin()), GSON)
                 .when()
                 .post("login")
                 .then()
+                .assertThat().body("access_token", CoreMatchers.notNullValue())
+                .statusCode(202)
                 .extract().jsonPath().get("access_token");
         return given().spec(getBasicPerfSpec()).auth().oauth2(accessToken);
     }

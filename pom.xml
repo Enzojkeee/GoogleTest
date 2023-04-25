@@ -49,6 +49,11 @@
             <artifactId>allure-junit5</artifactId>
             <version>2.18.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -74,7 +79,8 @@
                         </property>
                     </systemProperties>
                     <systemPropertyVariables>
-                        <allure.results.directory>${project.build.directory}${file.separator}allure-results</allure.results.directory>
+                        <allure.results.directory>${project.build.directory}${file.separator}allure-results
+                        </allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
                 <dependencies>
